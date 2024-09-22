@@ -9,7 +9,9 @@ config({
   path: ['.env', '.env.production', '.env.local'],
 });
 
-const sql = neon(process.env.DATABASE_URL);
+
+
+const sql = neon(process.env.CONNECTION_STRING);
 
 const dbProvider = {
   provide: 'POSTGRES_POOL',
@@ -22,5 +24,8 @@ const dbProvider = {
   exports: [dbProvider],
 })
 export class DatabaseModule {}
+
+
+
 
 
