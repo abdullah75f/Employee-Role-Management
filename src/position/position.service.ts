@@ -14,7 +14,10 @@ export class PositionService {
 
   async createPosition(createPositionDto: CreatePositionDto): Promise<Position> {
     const { name, description, parentId } = createPositionDto;
-    const position = this.positionRepository.create({ name, description, parentId });
-    return this.positionRepository.save(position);
+
+    // If parentId is not provided, set it to null (indicating the root position)
+    const newPosition = this.positionRepository.create({ name, description, parentId: parentId || null });
+
+    return this.positionRepository.save(newPosition);
   }
 }
