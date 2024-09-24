@@ -6,8 +6,10 @@ import {Client} from 'pg'
 export class DatabaseService {
   constructor(@Inject('POSTGRES_CLIENT') private readonly client:Client) {}
 
-  async queryTable() {
-    const result =  await this.client.query(`SELECT * FROM playing_with_neon;`);
+  async queryTable() : Promise<any[]>{
+
+    const result =  await this.client.query(`SELECT * FROM roles;`);
+    return result.rows;
   
   }
 }
