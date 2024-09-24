@@ -1,3 +1,4 @@
+//Entry point to our application
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
