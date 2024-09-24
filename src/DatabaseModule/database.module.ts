@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Client } from 'pg';
 import { config } from 'dotenv';
+import { DatabaseController } from './database.controller';
 
 // Load Environment Variables
 config({
@@ -24,6 +25,7 @@ const dbProvider = {
   imports: [ConfigModule],
   providers: [dbProvider],
   exports: [dbProvider],
+  controllers: [DatabaseController],
 })
 export class DatabaseModule {}
 
