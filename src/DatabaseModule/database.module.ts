@@ -1,7 +1,7 @@
 // src/database/database.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { neon } from '@neondatabase/serverless';
+import { Client } from 'pg';
 import { config } from 'dotenv';
 
 // Load Environment Variables
@@ -10,12 +10,14 @@ config({
 });
 
 
+const client =new Client({
+  connectionString: process.env.CONNECTION_STRING
+})
 
-const sql = neon(process.env.CONNECTION_STRING);
 
 const dbProvider = {
-  provide: 'POSTGRES_POOL',
-  useValue: sql,
+  provide: 'POSTGRES_CLIENT',
+  useValue: client,
 };
 
 @Module({
