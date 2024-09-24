@@ -1,5 +1,5 @@
-// src/position/position.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne,OneToMany, JoinColumn } from 'typeorm';
+// position.entity.ts
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Position {
@@ -12,10 +12,6 @@ export class Position {
   @Column()
   description: string;
 
-  @ManyToOne(() => Position, position => position.children, { nullable: true })
-  @JoinColumn({ name: 'parentId' })
-  parent: Position;
-
-  @OneToMany(() => Position, position => position.parent)
-  children: Position[];
+  @Column({ nullable: true })
+  parentId: string;
 }
