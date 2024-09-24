@@ -10,3 +10,4 @@ export class DatabaseController {
         return this.databaseService.queryTable();
     }
 }
+
