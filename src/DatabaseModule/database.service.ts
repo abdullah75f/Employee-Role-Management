@@ -1,5 +1,6 @@
 // src/database/database.service.ts
 import { Injectable, Inject } from '@nestjs/common';
+import {Client} from 'pg'
 
 @Injectable()
 export class DatabaseService {
