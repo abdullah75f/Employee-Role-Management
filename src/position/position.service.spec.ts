@@ -1,18 +1,36 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { PositionService } from './position.service';
+// src/position/position.service.ts
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Position } from './entities/position.entity';
+import { CreatePositionDto } from './dto/create-position.dto';
 
-describe('PositionService', () => {
-  let service: PositionService;
+@Injectable()
+export class PositionService {
+  constructor(
+    @InjectRepository(Position)
+    private readonly positionRepository: Repository<Position>,
+  ) {}
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [PositionService],
-    }).compile();
+  async create(createPositionDto: CreatePositionDto): Promise<Position> {
+    try {
+      const { name, description, parentId } = createPositionDto;
+      const position = new Position();
+      position.name = name;
+      position.description = description;
 
-    service = module.get<PositionService>(PositionService);
-  });
+      if (parentId) {
+        const parent = await this.positionRepository.findOne({ where: { id: parentId } });
+        if (!parent) {
+          throw new Error('Parent position not found');
+        }
+        position.parent = parent;
+      }
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+      return await this.positionRepository.save(position);
+    } catch (error) {
+      // Return a rejected Promise with the error message
+      return Promise.reject(error.message);
+    }
+  }
+}
