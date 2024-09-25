@@ -36,7 +36,7 @@ export class PositionController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.positionService.removeRole(+id);
+    return this.positionService.removeRole(id);
   }
   
 

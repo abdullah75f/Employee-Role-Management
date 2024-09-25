@@ -131,14 +131,14 @@ async getChildrenOfPosition(id: string): Promise<Role[]> {
   return children;
 }
 
-async removeRole(id: number): Promise<void> {
-  const role = await this.positionRepository.findOne({ where: { id: String(id) } });
+async removeRole(id: string): Promise<void> {
+  const role = await this.positionRepository.findOne({ where: { id } });
   if (!role) {
     throw new NotFoundException({ message: "Role Not Found" });
   }
 
   // Update children's parent ID if they exist
-  const children = await this.positionRepository.find({ where: { parentId: id.toString() } });
+  const children = await this.positionRepository.find({ where: { parentId: id } });
   if (children.length > 0) {
     await Promise.all(children.map(child => {
       child.parentId = role.parentId;
