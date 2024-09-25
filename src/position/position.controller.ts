@@ -28,7 +28,7 @@ export class PositionController {
   async getPositionHierarchy(): Promise<Role[]> {
     return this.positionService.getPositionHierarchy();
   }
-
+  //
   @Get(':id/children')
   async getChildrenOfPosition(@Param('id') id: string): Promise<Role[]> {
     return this.positionService.getChildrenOfPosition(id);
