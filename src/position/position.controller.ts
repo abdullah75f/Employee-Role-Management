@@ -8,16 +8,17 @@ import { Role } from './entities/position.entity';
 @Controller('positions')
 export class PositionController {
   constructor(private readonly positionService: RoleService) {}
-
+  //fixed
   @Post()
   async createPosition(@Body() createRoleDto: CreateRoleDto): Promise<Role> {
     return this.positionService.createPosition(createRoleDto);
   }
+  //fixed
   @Put(':id')
   async updateRole(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto): Promise<Role> {
     return this.positionService.updateRole(id, updateRoleDto);
   }
-
+  //fixed
   @Get(':id')
   async getPositionById(@Param('id') id: string): Promise<Role> {
     return this.positionService.getPositionById(id);
