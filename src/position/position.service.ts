@@ -1,9 +1,10 @@
 // position.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from './entities/position.entity';
 import { CreateRoleDto } from './dto/create-position.dto';
+import { UpdateRoleDto } from './dto/update-position.dto';
 
 @Injectable()
 export class RoleService {
@@ -24,8 +25,9 @@ export class RoleService {
   //here
   async updateRole(id: string, updateRoleDto: UpdateRoleDto): Promise<Role> {
     const { name, description, parentId } = updateRoleDto;
+    try{
 
-    const role = await this.roleRepository.findOne(id);
+    const role = await this.positionRepository.findOne({ where: { id } });
 
     if (!role) {
       throw new NotFoundException('Role not found');
@@ -35,6 +37,17 @@ export class RoleService {
     role.description = description;
     role.parentId = parentId;
 
-    return this.roleRepository.save(role);
+    const updatedRole = await this.positionRepository.save(role);
+    console.log('Role updated successfult', updatedRole);
+    return updatedRole;
+    
   }
+  catch (error) {
+    // Log the error for debugging purposes
+    console.error(error);
+    throw new InternalServerErrorException('Failed to update role');
+  }
+
+   
+}
 }
