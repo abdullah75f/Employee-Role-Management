@@ -12,7 +12,7 @@ export class RoleService {
     @InjectRepository(Role)
     private positionRepository: Repository<Role>,
   ) {}
-
+    //insert mew employe
   async createPosition(createRoleDto: CreateRoleDto): Promise<Role> {
     const { name, description, parentId } = createRoleDto;
 
@@ -22,7 +22,7 @@ export class RoleService {
     return this.positionRepository.save(newPosition);
   }
 
-  //here
+  //Update previously saved position
   async updateRole(id: string, updateRoleDto: UpdateRoleDto): Promise<Role> {
     const { name, description, parentId } = updateRoleDto;
     try{
@@ -50,43 +50,43 @@ export class RoleService {
 
    
 }
-
+// get single position detail
 async getPositionById(id: string): Promise<Role> {
-  const role = await this.positionRepository.findOne(id);
+  const role = await this.positionRepository.findOne({ where: { id } });
   if (!role) {
     throw new NotFoundException('Role not found');
   }
   return role;
 }
-
-async getPositionHierarchy(): Promise<Role[]> {
-  const allPositions = await this.positionRepository.find();
-  const positionsMap = new Map<string, Role>();
-  const hierarchy: Role[] = [];
-
-  allPositions.forEach((position) => {
-    positionsMap.set(position.id, position);
-  });
-
-  allPositions.forEach((position) => {
-    if (!position.parentId) {
-      hierarchy.push(position);
-    } else {
-      const parent = positionsMap.get(position.parentId);
-      if (parent) {
-        if (!parent.children) {
-          parent.children = [];
+  //Get all position/role structure according to hierarchy 
+  async getPositionHierarchy(): Promise<Role[]> {
+    const allPositions = await this.positionRepository.find();
+    const positionsMap = new Map<string, Role>();
+    const hierarchy: Role[] = [];
+  
+    allPositions.forEach((position) => {
+      positionsMap.set(position.id, position);
+    });
+  
+    allPositions.forEach((position) => {
+      if (!position.parentId) {
+        hierarchy.push(position);
+      } else {
+        const parent = positionsMap.get(position.parentId);
+        if (parent) {
+          // Type assertion to inform TypeScript that 'children' property may exist
+          if (!(parent as any).children) {
+            (parent as any).children = [];
+          }
+          (parent as any).children.push(position);
         }
-        parent.children.push(position);
       }
-    }
-  });
-
-  return hierarchy;
-}
-
+    });
+    return hierarchy;
+  }
+//Get all childrens of a specific position/role 
 async getChildrenOfPosition(id: string): Promise<Role[]> {
-  const position = await this.positionRepository.findOne(id);
+  const position = await this.positionRepository.findOne({ where: { id } });
   if (!position) {
     throw new NotFoundException('Position not found');
   }
