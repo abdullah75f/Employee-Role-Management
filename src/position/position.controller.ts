@@ -1,15 +1,15 @@
 // position.controller.ts
 import { Controller, Post, Body } from '@nestjs/common';
-import { PositionService } from './position.service';
-import { CreatePositionDto } from './dto/create-position.dto';
-import { Position } from './entities/position.entity';
+import { RoleService } from './position.service';
+import { CreateRoleDto } from './dto/create-position.dto';
+import { Role } from './entities/position.entity';
 
 @Controller('positions')
 export class PositionController {
-  constructor(private readonly positionService: PositionService) {}
+  constructor(private readonly positionService: RoleService) {}
 
   @Post()
-  async createPosition(@Body() createPositionDto: CreatePositionDto): Promise<Position> {
-    return this.positionService.createPosition(createPositionDto);
+  async createPosition(@Body() createRoleDto: CreateRoleDto): Promise<Role> {
+    return this.positionService.createPosition(createRoleDto);
   }
 }

@@ -2,18 +2,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Position } from './entities/position.entity';
-import { CreatePositionDto } from './dto/create-position.dto';
+import { Role } from './entities/position.entity';
+import { CreateRoleDto } from './dto/create-position.dto';
 
 @Injectable()
-export class PositionService {
+export class RoleService {
   constructor(
-    @InjectRepository(Position)
-    private positionRepository: Repository<Position>,
+    @InjectRepository(Role)
+    private positionRepository: Repository<Role>,
   ) {}
 
-  async createPosition(createPositionDto: CreatePositionDto): Promise<Position> {
-    const { name, description, parentId } = createPositionDto;
+  async createPosition(createRoleDto: CreateRoleDto): Promise<Role> {
+    const { name, description, parentId } = createRoleDto;
 
     // If parentId is not provided, set it to null (indicating the root position)
     const newPosition = this.positionRepository.create({ name, description, parentId: parentId || null });
