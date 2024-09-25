@@ -20,4 +20,21 @@ export class RoleService {
 
     return this.positionRepository.save(newPosition);
   }
+
+  //here
+  async updateRole(id: string, updateRoleDto: UpdateRoleDto): Promise<Role> {
+    const { name, description, parentId } = updateRoleDto;
+
+    const role = await this.roleRepository.findOne(id);
+
+    if (!role) {
+      throw new NotFoundException('Role not found');
+    }
+
+    role.name = name;
+    role.description = description;
+    role.parentId = parentId;
+
+    return this.roleRepository.save(role);
+  }
 }
