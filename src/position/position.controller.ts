@@ -1,5 +1,5 @@
 // position.controller.ts
-import { Controller, Post, Body,Put, Param,Get} from '@nestjs/common';
+import { Controller, Post, Body,Put, Param,Get,Delete} from '@nestjs/common';
 import { RoleService } from './position.service';
 import { CreateRoleDto } from './dto/create-position.dto';
 import { UpdateRoleDto } from './dto/update-position.dto';
@@ -34,6 +34,10 @@ export class PositionController {
     return this.positionService.getChildrenOfPosition(id);
   }
 
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.positionService.removeRole(+id);
+  }
   
 
 
