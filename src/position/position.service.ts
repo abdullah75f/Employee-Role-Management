@@ -1,4 +1,3 @@
-// position.service.ts
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,17 +11,17 @@ export class RoleService {
     @InjectRepository(Role)
     private positionRepository: Repository<Role>,
   ) {}
-    //insert mew employe
+    //insert mew role
   async createPosition(createRoleDto: CreateRoleDto): Promise<Role> {
     const { name, description, parentId } = createRoleDto;
 
-    // If parentId is not provided, set it to null (indicating the root position)
+    // If parentId is not provided, set it to null
     const newPosition = this.positionRepository.create({ name, description, parentId: parentId || null });
 
     return this.positionRepository.save(newPosition);
   }
 
-  //Update previously saved position
+  //Update previously saved role
   async updateRole(id: string, updateRoleDto: UpdateRoleDto): Promise<Role> {
     const { name, description, parentId } = updateRoleDto;
     try{
@@ -65,7 +64,7 @@ async getPositionById(id: string): Promise<Role | Role[]> {
       return role;
     }
   } catch (error) {
-    throw new Error(`Error in fetching role: ${error.message}`);
+    throw new Error(`Error in fetching role: ${(error as any).message}`);
   }
 }
 
@@ -73,40 +72,6 @@ async getPositionHierarchy(): Promise<Role[]> {
   // Return an array of Role entities for position hierarchy
   return this.positionRepository.find();
 }
-// get single position detail
-// async getPositionById(id: string): Promise<Role> {
-//   const role = await this.positionRepository.findOne({ where: { id } });
-//   if (!role) {
-//     throw new NotFoundException('Role not found');
-//   }
-//   return role;
-// }
-  //Get all position/role structure according to hierarchy 
-  // async getPositionHierarchy(): Promise<Role[]> {
-  //   const allPositions = await this.positionRepository.find();
-  //   const positionsMap = new Map<string, Role>();
-  //   const hierarchy: Role[] = [];
-  
-  //   allPositions.forEach((position) => {
-  //     positionsMap.set(position.id, position);
-  //   });
-  
-  //   allPositions.forEach((position) => {
-  //     if (!position.parentId) {
-  //       hierarchy.push(position);
-  //     } else {
-  //       const parent = positionsMap.get(position.parentId);
-  //       if (parent) {
-  //         // Type assertion to inform TypeScript that 'children' property may exist
-  //         if (!(parent as any).children) {
-  //           (parent as any).children = [];
-  //         }
-  //         (parent as any).children.push(position);
-  //       }
-  //     }
-  //   });
-  //   return hierarchy;
-  // }
 //Get all childrens of a specific position/role 
 async getChildrenOfPosition(id: string): Promise<Role[]> {
   
