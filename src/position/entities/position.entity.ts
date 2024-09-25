@@ -1,5 +1,6 @@
-// position.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+// classes that represent objects stored in a database
 
 @Entity()
 export class Role {
