@@ -12,6 +12,6 @@ export class Role {
   @Column()
   description: string;
 
-  @Column({ nullable: true })
+  @Column({ type:"uuid",nullable: true })
   parentId: string;
 }
