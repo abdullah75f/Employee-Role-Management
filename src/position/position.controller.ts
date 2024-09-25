@@ -1,5 +1,5 @@
 // position.controller.ts
-import { Controller, Post, Body,Put, Param} from '@nestjs/common';
+import { Controller, Post, Body,Put, Param,Get} from '@nestjs/common';
 import { RoleService } from './position.service';
 import { CreateRoleDto } from './dto/create-position.dto';
 import { UpdateRoleDto } from './dto/update-position.dto';
@@ -14,10 +14,27 @@ export class PositionController {
     return this.positionService.createPosition(createRoleDto);
   }
   @Put(':id')
-  
-
   async updateRole(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto): Promise<Role> {
     return this.positionService.updateRole(id, updateRoleDto);
   }
+
+  @Get(':id')
+  async getPositionById(@Param('id') id: string): Promise<Role> {
+    return this.positionService.getPositionById(id);
+  }
+
+  @Get('structure')
+  async getPositionHierarchy(): Promise<Role[]> {
+    return this.positionService.getPositionHierarchy();
+  }
+
+  @Get(':id/children')
+  async getChildrenOfPosition(@Param('id') id: string): Promise<Role[]> {
+    return this.positionService.getChildrenOfPosition(id);
+  }
+
+  
+
+
 
 }
