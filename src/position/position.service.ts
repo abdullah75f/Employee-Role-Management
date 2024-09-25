@@ -50,11 +50,11 @@ export class RoleService {
 
    
 }
-async getPositionById(id: string): Promise<Role> {
+async getPositionById(id: string): Promise<Role | Role[]> {
   try {
     if (id === 'structure') {
       // Return position hierarchy if id is 'structure'
-      return this.getPositionHierarchy()[0]; // Return the first role for demo purposes
+      return this.getPositionHierarchy() // Return the first role for demo purposes
     } else {
       const role = await this.positionRepository.findOne({ where: { id } });
 
@@ -130,6 +130,25 @@ async getChildrenOfPosition(id: string): Promise<Role[]> {
 
   return children;
 }
+
+async removeRole(id: number) {
+  const role = await this.roleManagementRepository.findOne({ where: { id } });
+
+  if (!role) {
+    throw new NotFoundException({ message: 'Role Not Found' });
+  }
+
+  // If the role has children, update their parentId to the parentId of the role being deleted
+  await this.roleManagementRepository.update(
+    { parentId: id },
+    { parentId: role.parentId }
+  );
+
+  // Delete the role
+  await this.roleManagementRepository.delete(id);
+}
+
+
 
 
 }

@@ -20,11 +20,11 @@ export class PositionController {
   }
   //fixed
   @Get(':id')
-  async getPositionById(@Param('id') id: string): Promise<Role> {
+  async getPositionById(@Param('id') id: string): Promise<Role | Role[]> {
     return this.positionService.getPositionById(id);
   }
   //not working
-  @Get('structure') // Endpoint for fetching position hierarchy
+  @Get('structure')
   async getPositionHierarchy(): Promise<Role[]> {
     return this.positionService.getPositionHierarchy();
   }
