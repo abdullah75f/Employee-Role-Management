@@ -5,9 +5,11 @@ import { RoleService } from './position.service';
 // # Run Jest with a pattern to match only the test files for PositionController
 // npx jest **/position.controller.spec.ts
 
+//jest's desctibe function and setting up a test suite
+
 describe('PositionController', () => {
   let controller: PositionController;
-  let roleService: RoleService;
+  let roleService: RoleService; //the roleService holds an instance of the RoleService class  defined in  './position.service'
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
