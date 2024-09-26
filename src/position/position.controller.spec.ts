@@ -11,11 +11,16 @@ describe('PositionController', () => {
   let controller: PositionController;
   let roleService: RoleService; //the roleService holds an instance of the RoleService class  defined in  './position.service'
 
+
+  // the below block is setting up the testing environment before each test
+  //initializes the NestJS testing module with the necessary controllers and providers for testing the PositionController
   beforeEach(async () => {
+    // creating new testing module
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PositionController],
       providers: [
         {
+          //method of the RoleService that is being used within the PositionController is mocked using jest.fn()
           provide: RoleService,
           useValue: {
             createPosition: jest.fn(),
@@ -33,6 +38,7 @@ describe('PositionController', () => {
     roleService = module.get<RoleService>(RoleService);
   });
 
+    //setting up a testcase, checks if the controller is defined
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
