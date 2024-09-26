@@ -49,7 +49,4 @@ export class PositionController {
     return this.positionService.removeRole(id);
   }
   
-
-
-
 }
