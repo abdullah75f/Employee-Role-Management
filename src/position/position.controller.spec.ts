@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PositionController } from './position.controller';
 import { RoleService } from './position.service';
 
+// # Run Jest with a pattern to match only the test files for PositionController
+// npx jest **/position.controller.spec.ts
 describe('PositionController', () => {
   let controller: PositionController;
   let roleService: RoleService;
@@ -69,9 +71,9 @@ describe('PositionController', () => {
   describe('getPositionHierarchy', () => {
     it('should get the position hierarchy', async () => {
       const mockPositionHierarchy = [
-        { id: '1', name: 'CEO', description: 'Chief Executive Officer', parentId:"2" },
+        { id: '1', name: 'CEO', description: 'Chief Executive Officer', parentId: '2' },
         { id: '2', name: 'Manager', description: 'Team Manager', parentId: '1' }
-    ];
+      ];
       jest.spyOn(roleService, 'getPositionHierarchy').mockResolvedValue(mockPositionHierarchy);
 
       expect(await controller.getPositionHierarchy()).toEqual(mockPositionHierarchy);
@@ -85,7 +87,7 @@ describe('PositionController', () => {
       const mockChildren = [
         { id: '2', name: 'Manager', description: 'Team Manager', parentId: '1' },
         { id: '3', name: 'Supervisor', description: 'Team Supervisor', parentId: '1' }
-    ];
+      ];
       jest.spyOn(roleService, 'getChildrenOfPosition').mockResolvedValue(mockChildren);
 
       expect(await controller.getChildrenOfPosition(positionId)).toEqual(mockChildren);
