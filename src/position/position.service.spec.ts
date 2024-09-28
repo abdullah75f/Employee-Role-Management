@@ -1,29 +1,29 @@
 // position.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
-import { PositionService } from './position.service';
+import { RoleService } from './position.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Position } from './entities/position.entity';
+import { Role } from './entities/position.entity';
 
 describe('PositionService', () => {
-  let service: PositionService;
+  let service: RoleService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PositionService,
+        RoleService,
         {
-          provide: getRepositoryToken(Position),
+          provide: getRepositoryToken(Role),
           useValue: {},
         },
       ],
     }).compile();
 
-    service = module.get<PositionService>(PositionService);
+    service = module.get<RoleService>(RoleService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  // Add more test cases as needed for the PositionService methods
+
 });
