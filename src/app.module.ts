@@ -4,6 +4,8 @@ import { PositionModule } from './position/position.module';
 import { DatabaseModule } from './DatabaseModule/database.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
+//TypeORM Database configuration
 @Module({
   imports: [
     TypeOrmModule.forRoot({
