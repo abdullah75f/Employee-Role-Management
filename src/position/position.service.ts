@@ -70,10 +70,10 @@ async getPositionById(id: string): Promise<Role | Role[]> {
   }
 }
 
-async getPositionHierarchy(): Promise<Role[]> {
-  // Return an array of Role entities for position hierarchy
-  return this.positionRepository.find();
-}
+// async getPositionHierarchy(): Promise<Role[]> {
+//   // Return an array of Role entities for position hierarchy
+//   return this.positionRepository.find();
+// }
 //Get all childrens of a specific position/role 
 async getChildrenOfPosition(id: string): Promise<Role[]> {
   // const position = await this.positionRepository.findOne({ where: { id } });
