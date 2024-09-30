@@ -9,19 +9,16 @@ export class PositionController {
   constructor(private readonly positionService: RoleService) {}
 
  //Logic for creating a role in my API
- 
   @Post()
   async createPosition(@Body() createRoleDto: CreateRoleDto): Promise<Role> {
     return this.positionService.createPosition(createRoleDto);
-  }
-
-   //Logic for updating a role in the API
+  } 
 //Logic for getting the whole structure for our role in the API
    @Get('structure')
    async getPositionHierarchy(): Promise<Role[] > {
      return this.positionService.getPositionById('structure');
    }
-
+//Logic for updating a role in the API
   @Put(':id')
   async updateRole(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto): Promise<Role> {
     return this.positionService.updateRole(id, updateRoleDto);
