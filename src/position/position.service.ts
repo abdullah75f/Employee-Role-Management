@@ -13,17 +13,28 @@ export class RoleService {
   ) {}
     //insert mew role
   async createPosition(createRoleDto: CreateRoleDto): Promise<Role> {
-    const { name, description, parentId } = createRoleDto;
+    // Access properties of createRoleDto directly
+    const newPosition = this.positionRepository.create({
+      name: createRoleDto.name,
+      description: createRoleDto.description,
+      parentId: createRoleDto.parentId || null
+  });
 
-    // If parentId is not provided, set it to null
-    const newPosition = this.positionRepository.create({ name, description, parentId: parentId || null });
+  await this.positionRepository.insert(newPosition);
+  return newPosition;
 
-    return this.positionRepository.save(newPosition);
+    
+    // const { name, description, parentId } = createRoleDto;
+
+    // // If parentId is not provided, set it to null
+    // const newPosition = this.positionRepository.create({ name, description, parentId: parentId || null });
+
+    // return this.positionRepository.save(newPosition);
   }
 
   //Update previously saved role
-  async updateRole(id: string, updateRoleDto: UpdateRoleDto): Promise<Role> {
-    const { name, description, parentId } = updateRoleDto;
+  async updateRole(id: string, updateRoleDto: Partial<UpdateRoleDto>): Promise<Role> {
+    // const { name, description, parentId } = updateRoleDto;
     try{
 
     const role = await this.positionRepository.findOne({ where: { id } });
@@ -31,14 +42,22 @@ export class RoleService {
     if (!role) {
       throw new NotFoundException('Role not found');
     }
+    await this.positionRepository.update(role.id, updateRoleDto);
+        // Fetch the updated role from the database
+        const updatedRole = await this.positionRepository.findOne({ where: { id } });
 
-    role.name = name;
-    role.description = description;
-    role.parentId = parentId;
+        if (!updatedRole) {
+            throw new InternalServerErrorException('Failed to fetch updated role');
+        }
+        return updatedRole;
 
-    const updatedRole = await this.positionRepository.save(role);
-    console.log('Role updated successfult', updatedRole);
-    return updatedRole;
+    // role.name = name;
+    // role.description = description;
+    // role.parentId = parentId;
+
+    // const updatedRole = await this.positionRepository.update(role.id,updateRoleDto);
+    // console.log('Role updated successfully', updatedRole);
+    // return updatedRole;
     
   }
   catch (error) {
@@ -49,6 +68,7 @@ export class RoleService {
 
    
 }
+
 async getPositionById(id: string): Promise<Role | Role[]> {
   try {
     if (id === 'structure') {
@@ -74,26 +94,25 @@ async getPositionHierarchy(): Promise<Role[]> {
 }
 //Get all childrens of a specific position/role 
 async getChildrenOfPosition(id: string): Promise<Role[]> {
-  
-  const position = await this.positionRepository.findOne({ where: { id } });
-  if (!position) {
-    throw new NotFoundException('Position not found');
-  }
+  // const position = await this.positionRepository.findOne({ where: { id } });
+  // if (!position) {
+  //   throw new NotFoundException('Position not found');
+  // }
 
-  const children: Role[] = [];
+  // const children: Role[] = [];
 
-  const findChildren = (parentId: string) => {
-    const childPositions = allPositions.filter((pos) => pos.parentId === parentId);
-    childPositions.forEach((child) => {
-      children.push(child);
-      findChildren(child.id);
-    });
-  };
+  // const findChildren = (parentId: string) => {
+  //   const childPositions = allPositions.filter((pos) => pos.parentId === parentId);
+  //   childPositions.forEach((child) => {
+  //     children.push(child);
+  //     findChildren(child.id);
+  //   });
+  // };
 
-  const allPositions = await this.positionRepository.find();
-  findChildren(id);
+  const allPositions = await this.positionRepository.find({where:{parentId:id}});
+  // findChildren(id);
 
-  return children;
+  return allPositions;
 }
 
 async removeRole(id: string): Promise<void> {

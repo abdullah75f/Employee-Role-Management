@@ -16,6 +16,11 @@ export class PositionController {
   }
 
    //Logic for updating a role in the API
+//Logic for getting the whole structure for our role in the API
+   @Get('structure')
+   async getPositionHierarchy(): Promise<Role[]> {
+     return this.positionService.getPositionHierarchy();
+   }
 
   @Put(':id')
   async updateRole(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto): Promise<Role> {
@@ -27,11 +32,8 @@ export class PositionController {
   async getPositionById(@Param('id') id: string): Promise<Role | Role[]> {
     return this.positionService.getPositionById(id);
   }
-  //Logic for getting the whole structure for our role in the API
-  @Get('structure')
-  async getPositionHierarchy(): Promise<Role[]> {
-    return this.positionService.getPositionHierarchy();
-  }
+  
+
 
      //Logic for getting the childeren of a given role in the API
   @Get(':id/children')
