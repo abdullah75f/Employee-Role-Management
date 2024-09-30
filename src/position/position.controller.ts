@@ -33,10 +33,10 @@ export class PositionController {
 
 
      //Logic for getting the childeren of a given role in the API
-  @Get(':id/children')
-  async getChildrenOfPosition(@Param('id') id: string): Promise<Role[]> {
-    return this.positionService.getChildrenOfPosition(id);
-  }
+     @Get(':id/children') 
+     async getChildrenOfPosition(@Param('id') id: string): Promise<Role[]> {
+       return this.positionService.getChildrenOfPosition(id);
+     }
 
    //Logic for deleting a given role in the API
   @Delete(':id')

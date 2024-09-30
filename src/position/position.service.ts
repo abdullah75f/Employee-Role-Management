@@ -45,11 +45,10 @@ export class RoleService {
   }
   catch (error) {
     throw new InternalServerErrorException('Failed to update role');
-  }
-
-   
+  }   
 }
 
+//get a specific role by using id
 async getPositionById(id: string): Promise<Role[]> {
   try {
     if (id === 'structure') {
@@ -75,23 +74,10 @@ async getPositionById(id: string): Promise<Role[]> {
 // }
 //Get all childrens of a specific position/role 
 async getChildrenOfPosition(id: string): Promise<Role[]> {
-  // const position = await this.positionRepository.findOne({ where: { id } });
-  // if (!position) {
-  //   throw new NotFoundException('Position not found');
-  // }
-
-  // const children: Role[] = [];
-
-  // const findChildren = (parentId: string) => {
-  //   const childPositions = allPositions.filter((pos) => pos.parentId === parentId);
-  //   childPositions.forEach((child) => {
-  //     children.push(child);
-  //     findChildren(child.id);
-  //   });
-  // };
+  
 
   const allPositions = await this.positionRepository.find({where:{parentId:id}});
-  // findChildren(id);
+
 
   return allPositions;
 }
