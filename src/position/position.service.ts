@@ -54,8 +54,8 @@ export class RoleService {
 async getPositionById(id: string): Promise<Role | Role[]> {
   try {
     if (id === 'structure') {
-      // Return position hierarchy if id is 'structure'
-      return this.getPositionHierarchy() // Return the first role for demo purposes
+     
+      return this.positionRepository.find(); 
     } else {
       const role = await this.positionRepository.findOne({ where: { id } });
 
