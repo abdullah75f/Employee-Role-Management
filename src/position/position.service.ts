@@ -22,19 +22,11 @@ export class RoleService {
 
   await this.positionRepository.insert(newPosition);
   return newPosition;
-
-    
-    // const { name, description, parentId } = createRoleDto;
-
-    // // If parentId is not provided, set it to null
-    // const newPosition = this.positionRepository.create({ name, description, parentId: parentId || null });
-
-    // return this.positionRepository.save(newPosition);
   }
 
   //Update previously saved role
   async updateRole(id: string, updateRoleDto: Partial<UpdateRoleDto>): Promise<Role> {
-    // const { name, description, parentId } = updateRoleDto;
+   
     try{
 
     const role = await this.positionRepository.findOne({ where: { id } });
@@ -50,19 +42,9 @@ export class RoleService {
             throw new InternalServerErrorException('Failed to fetch updated role');
         }
         return updatedRole;
-
-    // role.name = name;
-    // role.description = description;
-    // role.parentId = parentId;
-
-    // const updatedRole = await this.positionRepository.update(role.id,updateRoleDto);
-    // console.log('Role updated successfully', updatedRole);
-    // return updatedRole;
     
   }
   catch (error) {
-    // Log the error for debugging purposes
-    console.error(error);
     throw new InternalServerErrorException('Failed to update role');
   }
 
