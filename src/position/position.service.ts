@@ -68,17 +68,24 @@ async getPositionById(id: string): Promise<Role[]> {
   }
 }
 
-// async getPositionHierarchy(): Promise<Role[]> {
-//   // Return an array of Role entities for position hierarchy
-//   return this.positionRepository.find();
-// }
-//Get all childrens of a specific position/role 
+
+async findPositionTree(id: string = null): Promise<Role[]> {
+  const childrenPositions = await this.positionRepository.find({
+    where: { parentId: id },
+  });
+
+  const positionTree = await Promise.all(childrenPositions.map(async position => {
+    const children = await this.findPositionTree(position.id);
+    return {
+      ...position,
+      children,
+    };
+  }));
+
+  return positionTree;
+}
 async getChildrenOfPosition(id: string): Promise<Role[]> {
-  
-
   const allPositions = await this.positionRepository.find({where:{parentId:id}});
-
-
   return allPositions;
 }
 
