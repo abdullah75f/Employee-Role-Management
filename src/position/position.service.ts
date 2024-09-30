@@ -51,7 +51,7 @@ export class RoleService {
    
 }
 
-async getPositionById(id: string): Promise<Role | Role[]> {
+async getPositionById(id: string): Promise<Role[]> {
   try {
     if (id === 'structure') {
      
@@ -63,7 +63,7 @@ async getPositionById(id: string): Promise<Role | Role[]> {
         throw new Error('Role not found');
       }
 
-      return role;
+      return [role];
     }
   } catch (error) {
     throw new Error(`Error in fetching role: ${(error as any).message}`);

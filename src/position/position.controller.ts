@@ -18,8 +18,8 @@ export class PositionController {
    //Logic for updating a role in the API
 //Logic for getting the whole structure for our role in the API
    @Get('structure')
-   async getPositionHierarchy(): Promise<Role[]> {
-     return this.positionService.getPositionHierarchy();
+   async getPositionHierarchy(): Promise<Role[] > {
+     return this.positionService.getPositionById('structure');
    }
 
   @Put(':id')
