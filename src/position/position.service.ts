@@ -11,9 +11,9 @@ export class RoleService {
     @InjectRepository(Role)
     private positionRepository: Repository<Role>,
   ) {}
-    //insert mew role
+
+    //insert new role
   async createPosition(createRoleDto: CreateRoleDto): Promise<Role> {
-    // Access properties of createRoleDto directly
     const newPosition = this.positionRepository.create({
       name: createRoleDto.name,
       description: createRoleDto.description,
@@ -35,7 +35,6 @@ export class RoleService {
       throw new NotFoundException('Role not found');
     }
     await this.positionRepository.update(role.id, updateRoleDto);
-        // Fetch the updated role from the database
         const updatedRole = await this.positionRepository.findOne({ where: { id } });
 
         if (!updatedRole) {
