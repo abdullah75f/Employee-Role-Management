@@ -76,10 +76,16 @@ async findAll(id: string): Promise<{ [key: string]: any }> {
     const findRoleTree = async (id: string): Promise<{ [key: string]: any }> => {
       const childRoles = await this.positionRepository.find({ where: { parentId: id } });
 
-      const children: { [key: string]: any } = {};
+      const children: { [key: string]: any }[] = [];
       for (const child of childRoles) {
         const grandChildRoles = await findRoleTree(child.id); // Recursively find children
-        children[child.name] = grandChildRoles; // Use child name as the key
+        children.push({
+          id: child.id,
+          name: child.name,
+          description: child.description,
+          parentId: child.parentId,
+          children: grandChildRoles
+        });
       }
 
       return children;
@@ -91,13 +97,18 @@ async findAll(id: string): Promise<{ [key: string]: any }> {
     }
 
     const descendant = await findRoleTree(id);
-    return { [currRole.name]: descendant };
+    return {
+      id: currRole.id,
+      name: currRole.name,
+      description: currRole.description,
+      parentId: currRole.parentId,
+      children: descendant
+    };
   } catch (error) {
     console.error('Error in findAll:', error);
     throw new InternalServerErrorException('Failed to fetch role tree structure');
   }
 }
-
 async removeRole(id: string): Promise<void> {
   const role = await this.positionRepository.findOne({ where: { id } });
   if (!role) {
