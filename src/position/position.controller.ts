@@ -1,4 +1,4 @@
-import { Controller, Post, Body,Put, Param,Get,Delete} from '@nestjs/common';
+import { Controller, Post, Body,Put, Param,Get,Delete,InternalServerErrorException} from '@nestjs/common';
 import { RoleService } from './position.service';
 import { CreateRoleDto } from './dto/create-position.dto';
 import { UpdateRoleDto } from './dto/update-position.dto';
@@ -19,7 +19,17 @@ export class PositionController {
      return this.positionService.getPositionById('structure');
    }
 
-   @Get('tree')
+   @Get(':id/children/tree')
+  async findChildrenTree(@Param('id') id: string): Promise<any> {
+    try {
+      const tree = await this.positionService.findAll(id);
+      return tree;
+    } catch (error) {
+      console.error('Error in findChildrenTree:', error);
+      throw new InternalServerErrorException('Failed to fetch tree structure');
+    }
+  }
+
 //Logic for updating a role in the API
   @Put(':id')
   async updateRole(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto): Promise<Role> {

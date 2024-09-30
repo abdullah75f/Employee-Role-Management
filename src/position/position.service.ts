@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Role } from './entities/position.entity';
 import { CreateRoleDto } from './dto/create-position.dto';
 import { UpdateRoleDto } from './dto/update-position.dto';
@@ -67,26 +67,35 @@ async getPositionById(id: string): Promise<Role[]> {
     throw new Error(`Error in fetching role: ${(error as any).message}`);
   }
 }
-
-
-async findPositionTree(id: string = null): Promise<Role[]> {
-  const childrenPositions = await this.positionRepository.find({
-    where: { parentId: id },
-  });
-
-  const positionTree = await Promise.all(childrenPositions.map(async position => {
-    const children = await this.findPositionTree(position.id);
-    return {
-      ...position,
-      children,
-    };
-  }));
-
-  return positionTree;
-}
 async getChildrenOfPosition(id: string): Promise<Role[]> {
   const allPositions = await this.positionRepository.find({where:{parentId:id}});
   return allPositions;
+} // Find the tree structure
+async findAll(id: string): Promise<{ [key: string]: any }> {
+  try {
+    const findRoleTree = async (id: string): Promise<{ [key: string]: any }> => {
+      const childRoles = await this.positionRepository.find({ where: { parentId: id } });
+
+      const children: { [key: string]: any } = {};
+      for (const child of childRoles) {
+        const grandChildRoles = await findRoleTree(child.id); // Recursively find children
+        children[child.name] = grandChildRoles; // Use child name as the key
+      }
+
+      return children;
+    };
+
+    const currRole = await this.positionRepository.findOne({ where: { id } });
+    if (!currRole) {
+      throw new NotFoundException('Role not found');
+    }
+
+    const descendant = await findRoleTree(id);
+    return { [currRole.name]: descendant };
+  } catch (error) {
+    console.error('Error in findAll:', error);
+    throw new InternalServerErrorException('Failed to fetch role tree structure');
+  }
 }
 
 async removeRole(id: string): Promise<void> {
@@ -107,7 +116,5 @@ async removeRole(id: string): Promise<void> {
   // Delete the role
   await this.positionRepository.delete(id);
 }
-
-
 
 }
