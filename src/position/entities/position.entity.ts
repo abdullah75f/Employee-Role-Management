@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne,JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne,OneToMany,JoinColumn } from 'typeorm';
 
 // classes that represent objects stored in a database
 @Entity()
@@ -18,4 +18,9 @@ export class Role {
   @ManyToOne(()=>Role, (role) => role.children,{nullable:true})
   @JoinColumn({name: "parentId"})
   parent: Role;
+
+  @OneToMany(() => Role, role => role.parent)
+  children: Role[];
+
+
 }
