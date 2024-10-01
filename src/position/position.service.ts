@@ -70,44 +70,42 @@ async getPositionById(id: string): Promise<Role[]> {
 async getChildrenOfPosition(id: string): Promise<Role[]> {
   const allPositions = await this.positionRepository.find({where:{parentId:id}});
   return allPositions;
-} // Find the tree structure
-async findAll(id: string): Promise<{ [key: string]: any }> {
-  try {
-    const findRoleTree = async (id: string): Promise<{ [key: string]: any }> => {
-      const childRoles = await this.positionRepository.find({ where: { parentId: id } });
-
-      const children: { [key: string]: any }[] = [];
-      for (const child of childRoles) {
-        const grandChildRoles = await findRoleTree(child.id); // Recursively find children
-        children.push({
-          id: child.id,
-          name: child.name,
-          description: child.description,
-          parentId: child.parentId,
-          children: grandChildRoles
+} 
+// Find the tree structure
+findAll(id: string): Promise<{ [key: string]: any }> {
+  const buildRoleTree = (parentId: string): Promise<{ [key: string]: any }> => {
+    return this.positionRepository.find({ where: { parentId } })
+      .then(subRoles => {
+        const subRoleTreePromises = subRoles.map(subRole => {
+          return buildRoleTree(subRole.id).then(nestedSubRoles => ({
+            id: subRole.id,
+            name: subRole.name,
+            description: subRole.description,
+            parentId: subRole.parentId,
+            children: nestedSubRoles
+          }));
         });
+        return Promise.all(subRoleTreePromises);
+      });
+  };
+
+  return this.positionRepository.findOne({ where: { id } })
+    .then(mainRole => {
+      if (!mainRole) {
+        return Promise.reject(new NotFoundException('Role not found'));
       }
-
-      return children;
-    };
-
-    const currRole = await this.positionRepository.findOne({ where: { id } });
-    if (!currRole) {
-      throw new NotFoundException('Role not found');
-    }
-
-    const descendant = await findRoleTree(id);
-    return {
-      id: currRole.id,
-      name: currRole.name,
-      description: currRole.description,
-      parentId: currRole.parentId,
-      children: descendant
-    };
-  } catch (error) {
-    console.error('Error in findAll:', error);
-    throw new InternalServerErrorException('Failed to fetch role tree structure');
-  }
+      return buildRoleTree(id).then(roleTree => ({
+        id: mainRole.id,
+        name: mainRole.name,
+        description: mainRole.description,
+        parentId: mainRole.parentId,
+        children: roleTree
+      }));
+    })
+    .catch(error => {
+      console.error('Error in getRoleHierarchy:', error);
+      throw new InternalServerErrorException('Failed to fetch role tree structure');
+    });
 }
 async removeRole(id: string): Promise<void> {
   const role = await this.positionRepository.findOne({ where: { id } });
