@@ -77,6 +77,7 @@ findTree(id: string): Promise<{ [key: string]: any }> {
     return this.positionRepository.find({ where: { parentId } })
       .then(subRoles => {
         const subRoleTreePromises = subRoles.map(subRole => {
+          //recursion
           return buildRoleTree(subRole.id).then(nestedSubRoles => ({
             id: subRole.id,
             name: subRole.name,
@@ -107,6 +108,8 @@ findTree(id: string): Promise<{ [key: string]: any }> {
       throw new InternalServerErrorException('Failed to fetch role tree structure');
     });
 }
+
+//deleting a role
 async removeRole(id: string): Promise<void> {
   const role = await this.positionRepository.findOne({ where: { id } });
   if (!role) {
