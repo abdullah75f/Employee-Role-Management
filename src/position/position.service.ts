@@ -118,7 +118,7 @@ async getChildrenOfPosition(id: string): Promise<Role[]> {
     .then(roles => {
       const roleTree: { [key: string]: any } = {};
 
-      // Initialize the role map
+      
       roles.forEach(role => {
         roleTree[role.id] = {
           id: role.id,
@@ -129,7 +129,7 @@ async getChildrenOfPosition(id: string): Promise<Role[]> {
         };
       });
 
-      // Build the tree structure recursively
+      //Recursion 
       const buildRoleTree = (parentId: string): { [key: string]: any }[] => {
         return roles
           .filter(role => role.parentId === parentId)
@@ -139,7 +139,7 @@ async getChildrenOfPosition(id: string): Promise<Role[]> {
           }));
       };
 
-      // Find root roles (roles without a parent)
+     //My parent role
       const tree: { [key: string]: any } = {};
       roles.forEach(role => {
         if (!role.parentId) {
