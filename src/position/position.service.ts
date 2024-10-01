@@ -72,7 +72,7 @@ async getChildrenOfPosition(id: string): Promise<Role[]> {
   return allPositions;
 } 
 // Find the tree structure
-findAll(id: string): Promise<{ [key: string]: any }> {
+findTree(id: string): Promise<{ [key: string]: any }> {
   const buildRoleTree = (parentId: string): Promise<{ [key: string]: any }> => {
     return this.positionRepository.find({ where: { parentId } })
       .then(subRoles => {
