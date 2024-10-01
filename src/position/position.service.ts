@@ -71,40 +71,89 @@ async getChildrenOfPosition(id: string): Promise<Role[]> {
   const allPositions = await this.positionRepository.find({where:{parentId:id}});
   return allPositions;
 } 
-// Find the tree structure
-findTree(id: string): Promise<{ [key: string]: any }> {
-  const buildRoleTree = (parentId: string): Promise<{ [key: string]: any }> => {
-    return this.positionRepository.find({ where: { parentId } })
-      .then(subRoles => {
-        const subRoleTreePromises = subRoles.map(subRole => {
-          //recursion
-          return buildRoleTree(subRole.id).then(nestedSubRoles => ({
-            id: subRole.id,
-            name: subRole.name,
-            description: subRole.description,
-            parentId: subRole.parentId,
-            children: nestedSubRoles
-          }));
-        });
-        return Promise.all(subRoleTreePromises);
-      });
-  };
 
-  return this.positionRepository.findOne({ where: { id } })
-    .then(mainRole => {
-      if (!mainRole) {
-        return Promise.reject(new NotFoundException('Role not found'));
-      }
-      return buildRoleTree(id).then(roleTree => ({
-        id: mainRole.id,
-        name: mainRole.name,
-        description: mainRole.description,
-        parentId: mainRole.parentId,
-        children: roleTree
-      }));
+
+
+// // Find the tree structure/main 101
+// findTree(id: string): Promise<{ [key: string]: any }> {
+//   const buildRoleTree = (parentId: string): Promise<{ [key: string]: any }> => {
+//     return this.positionRepository.find({ where: { parentId } })
+//       .then(subRoles => {
+//         const subRoleTreePromises = subRoles.map(subRole => {
+//           //recursion
+//           return buildRoleTree(subRole.id).then(nestedSubRoles => ({
+//             id: subRole.id,
+//             name: subRole.name,
+//             description: subRole.description,
+//             parentId: subRole.parentId,
+//             children: nestedSubRoles
+//           }));
+//         });
+//         return Promise.all(subRoleTreePromises);
+//       });
+//   };
+
+//   return this.positionRepository.findOne({ where: { id } })
+//     .then(mainRole => {
+//       if (!mainRole) {
+//         return Promise.reject(new NotFoundException('Role not found'));
+//       }
+//       return buildRoleTree(id).then(roleTree => ({
+//         id: mainRole.id,
+//         name: mainRole.name,
+//         description: mainRole.description,
+//         parentId: mainRole.parentId,
+//         children: roleTree
+//       }));
+//     })
+//     .catch(error => {
+//       console.error('Error in getRoleHierarchy:', error);
+//       throw new InternalServerErrorException('Failed to fetch role tree structure');
+//     });
+// }
+
+ // Find the entire tree structure
+ findTree(): Promise<{ [key: string]: any }> {
+  return this.positionRepository.find()
+    .then(roles => {
+      const roleTree: { [key: string]: any } = {};
+
+      // Initialize the role map
+      roles.forEach(role => {
+        roleTree[role.id] = {
+          id: role.id,
+          name: role.name,
+          description: role.description,
+          parentId: role.parentId,
+          children: []
+        };
+      });
+
+      // Build the tree structure recursively
+      const buildRoleTree = (parentId: string): { [key: string]: any }[] => {
+        return roles
+          .filter(role => role.parentId === parentId)
+          .map(role => ({
+            ...roleTree[role.id],
+            children: buildRoleTree(role.id)
+          }));
+      };
+
+      // Find root roles (roles without a parent)
+      const tree: { [key: string]: any } = {};
+      roles.forEach(role => {
+        if (!role.parentId) {
+          tree[role.id] = {
+            ...roleTree[role.id],
+            children: buildRoleTree(role.id)
+          };
+        }
+      });
+
+      return tree;
     })
     .catch(error => {
-      console.error('Error in getRoleHierarchy:', error);
+      console.error('Error in findTree:', error);
       throw new InternalServerErrorException('Failed to fetch role tree structure');
     });
 }

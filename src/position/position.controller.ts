@@ -19,16 +19,16 @@ export class PositionController {
      return this.positionService.getPositionById('structure');
    }
 
-   @Get(':id/children/tree')
-  async findChildrenTree(@Param('id') id: string): Promise<any> {
-    try {
-      const tree = await this.positionService.findTree(id);
-      return tree;
-    } catch (error) {
-      console.error('Error in findChildrenTree:', error);
-      throw new InternalServerErrorException('Failed to fetch tree structure');
-    }
-  }
+   @Get('tree')
+   async findTree(): Promise<any> {
+     try {
+       const tree = await this.positionService.findTree();
+       return tree;
+     } catch (error) {
+       console.error('Error in findTree:', error);
+       throw new InternalServerErrorException('Failed to fetch tree structure');
+     }
+   }
 
 //Logic for updating a role in the API
   @Put(':id')
